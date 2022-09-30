@@ -1,29 +1,7 @@
 import java.util.Objects;
 import java.util.UUID;
 
-public class Bus extends Transport{
-    int currentPassenger;
-    int fee;
-
-
-    // 현재 승객
-    public int get_currentPassenger() {
-       return currentPassenger;
-    }
-
-    public void set_currentPassenger(int Passenger) {
-        this.currentPassenger += Passenger;
-    }
-
-    // 요금
-    public int get_fee() {
-        return fee;
-    }
-
-    public void set_fee(int fee) {
-        this.fee = fee;
-    }
-
+public class Bus extends Transport {
 
     // 버스 생성
     Bus() {
@@ -31,39 +9,59 @@ public class Bus extends Transport{
     }
 
     Bus(String Number) {
-        this.set_Number(Number);
-        this.set_currentPassenger(30);
-        this.set_status("운행");
-        this.set_fee(1000);
+        set_Number(Number);
+        set_maxPassenger(30);
+        start();
+        set_fee(1000);
+        Bus_info();
     }
 
-    public void get_Bus() {
-        System.out.println("===================================");
-        System.out.println("벼스번호: " + this.transNumber);
-        System.out.println("");
+    // 버스 정보 조회
+    public void Bus_info() {
+        System.out.println("===============Bus Status=================");
+        System.out.println("벼스번호 : " + get_Number());
+        System.out.println("최대 승객수 : " + get_maxPassenger());
+        System.out.println("현재 승객수 : " + get_currentPassenger());
+        System.out.println("요금 : " + get_fee());
+        System.out.println("주유량 : " + get_feulVolume());
+        System.out.println("현재 속도 : " + get_currentSpeed());
+        System.out.println("상태 : " + get_status());
+        System.out.println("==========================================");
+        System.out.println();
+        System.out.println();
     }
-    public void set_status(String status) {
-        if (get_feulVolume() < 10)
-            System.out.println("현재 주유량이 " + get_feulVolume() + "L이기 때문에 주유가 필요합니다.");
 
-        this.status = status;
-    }
-
-    public void addPassenger(int Passenger) {
-        if (Objects.equals(this.get_status(), "운행")) {
-            for (int i = Passenger; i > 0; i--) {
-                this.set_currentPassenger(1);
-                if (get_currentPassenger() > get_maxPassenger()) {
-                    System.out.println("최대 탑승 인원수를 " + i + "명 초과하였습니다.");
-                    return;
-                }
-            }
-            System.out.println(Passenger + "명이 추가로 탑승하여 현재 탑승 인원은 " + get_currentPassenger() + "명 입니다.");
-        } else {
-            System.out.println("현재 버스가 운행중이 아닙니다.");
+    // 기름 관리
+    public void add_feul(int feul) {
+        feulVolume += feul;
+        System.out.println("주유량 = " + get_feulVolume());
+        if (get_feulVolume() < 10) {
+            change_status("차고지행");
+            System.out.println("주유 필요");
         }
-
     }
 
+    // 승객 탑승
+    public void add_Passenger(int passenger) {
+        if (Objects.equals(this.get_status(), "운행")) {
+            if (get_maxPassenger() == get_currentPassenger()) {
+                System.out.println("현재 최대 탑승 인원이 탑승중입니다.");
+                System.out.println();
+                return;
+            }
+            if (get_currentPassenger() + passenger > get_maxPassenger()) {
+                System.out.println("최대 탑승 인원수를 초과하였습니다.");
+                System.out.println();
+                return;
+            }
+            set_currentPassenger(passenger);
+            System.out.println("탑승 승객 수 = " + get_currentPassenger());
+            System.out.println("잔여 승객 수 = " + (get_maxPassenger() - get_currentPassenger()));
+            System.out.println("요금 확인 = " + (get_fee() * get_currentPassenger()));
+        } else {
+            System.out.println("현재 상태가 운행중이 아닙니다.");
+        }
+        System.out.println();
+    }
 
 }
